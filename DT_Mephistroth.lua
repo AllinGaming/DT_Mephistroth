@@ -197,7 +197,7 @@ local function OnChatMessage(event, message)
     -- 检查是否为目标BOSS喊话（多语言）
     if string.find(message, L.BOSS_CAST)
         or (L.BOSS_CAST_CN and string.find(message, L.BOSS_CAST_CN)) then
-        -- DisableWASD()
+        DisableWASD()
         ShowBigMessage(L.BIGMSG)
     end
 end
@@ -241,5 +241,5 @@ end
 -- ===== testing helpers =====
 SLASH_DTMTEST1 = "/dtmtest"
 SlashCmdList["DTMTEST"] = function(msg)
-    ReallyDisableWASD()
+    DisableWASD()
 end
