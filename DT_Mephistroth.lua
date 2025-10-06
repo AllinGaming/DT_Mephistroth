@@ -163,7 +163,7 @@ end
 local function DisableWhenStillAndDebuffed(timeoutSec)
   local startTime, stillFor = GetTime(), 0
     DT_Timer.After(2.9, DisableBindings)
-    DT_Timer.After(3.3, WatchAura)
+    DT_Timer.After(3.1, WatchAura)
   local function poll()
     if timeoutSec and (GetTime() - startTime > timeoutSec) then return end
 
@@ -323,3 +323,4 @@ SlashCmdList["DTMQETOGGLE"] = function(msg)
   DEFAULT_CHAT_FRAME:AddMessage("|cff00ff00[DT_Mephistroth]|r Q/E disabling: "
     .. (DT_MephistrothDB.includeQE and "|cffffff00ON|r" or "|cffff0000OFF|r"))
 end
+
