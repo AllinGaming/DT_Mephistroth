@@ -6,7 +6,7 @@
 --  Version info
 ------------------------------------------------------------
 local ADDON_PREFIX = "DTMEPH"
-local ADDON_VERSION = "1.5.0"
+local ADDON_VERSION = "1.6.0"
 local versionReplies = {}
 local versionActive  = false
 local versionStart   = 0
@@ -95,6 +95,9 @@ local function HasShackles()
   return AuraHasName("player", L.SHACKLES_NAME, L.SHACKLES_NAME_CN)
 end
 
+local function HasConeOfCold()
+  return AuraHasName("player", "Cone of Cold", "Cone of Cold")
+end
 ------------------------------------------------------------
 --  Movement detection (position delta)
 ------------------------------------------------------------
@@ -156,6 +159,51 @@ local function WatchAura()
   end
   DT_Timer.After(0.2, WatchAura)
 end
+------------------------------------------------------------
+--  Debuff watcher (restores when Shackles fades)
+------------------------------------------------------------
+local function WatchAuraCoC()
+  if not isDisabled then return end
+  if not HasConeOfCold() then
+    RestoreBindings()
+    return
+  end
+  DT_Timer.After(0.2, WatchAura)
+end
+------------------------------------------------------------
+--  Wait until still & debuffed (timer-based)
+------------------------------------------------------------
+local function DisableWhenStillAndDebuffedCoc(timeoutSec)
+  local startTime, stillFor = GetTime(), 0
+    DT_Timer.After(2.9, DisableBindings)
+    DT_Timer.After(3.1, WatchAuraCoC)
+  local function poll()
+    if timeoutSec and (GetTime() - startTime > timeoutSec) then return end
+
+    -- -- Wait for debuff
+    -- if not HasShackles() then
+    --   stillFor = 0
+    --   DT_Timer.After(0.2, poll)
+    --   return
+    -- end
+
+    -- Wait for stop moving
+    if PlayerIsMoving() then
+      stillFor = 0
+      DT_Timer.After(0.2, poll)
+      return
+    end
+
+    stillFor = stillFor + 0.2
+    if stillFor >= 0.3 then
+      DT_Timer.After(8.5, function() if isDisabled then RestoreBindings() end end)
+    else
+      DT_Timer.After(0.2, poll)
+    end
+  end
+
+  poll()
+end
 
 ------------------------------------------------------------
 --  Wait until still & debuffed (timer-based)
@@ -193,13 +241,60 @@ local function DisableWhenStillAndDebuffed(timeoutSec)
 end
 
 ------------------------------------------------------------
+--  Wait until still & debuffed test version (timer-based)
+------------------------------------------------------------
+local function DisableWhenStillAndDebuffedTest(timeoutSec)
+  local startTime, stillFor = GetTime(), 0
+    DT_Timer.After(2.9, DisableBindings)
+    -- DT_Timer.After(3.1, WatchAura)
+    DT_Timer.After(8.5, function() if isDisabled then RestoreBindings() end end)
+  -- local function poll2()
+  --   if timeoutSec and (GetTime() - startTime > timeoutSec) then return end
+
+  --   -- -- Wait for debuff
+  --   -- if not HasShackles() then
+  --   --   stillFor = 0
+  --   --   DT_Timer.After(0.2, poll)
+  --   --   return
+  --   -- end
+
+  --   -- Wait for stop moving
+  --   if PlayerIsMoving() then
+  --     stillFor = 0
+  --     DT_Timer.After(0.2, poll2)
+  --     return
+  --   end
+
+  --   stillFor = stillFor + 0.2
+  --   if stillFor >= 0.3 then
+  --     DT_Timer.After(8.5, function() if isDisabled then RestoreBindings() end end)
+  --   else
+  --     DT_Timer.After(0.2, poll2)
+  --   end
+  -- end
+
+  -- poll2()
+end
+
+------------------------------------------------------------
 --  Trigger flow
 ------------------------------------------------------------
 local function OnShacklesCast()
   ShowBigMessage(L.BIGMSG)
-  DisableWhenStillAndDebuffed(8.0)
+  DisableWhenStillAndDebuffed(8.5)
+end
+------------------------------------------------------------
+--  Trigger flow
+------------------------------------------------------------
+local function OnShacklesCastCoc()
+  ShowBigMessage(L.BIGMSG)
+  DisableWhenStillAndDebuffedCoc(8.5)
 end
 
+local function OnShacklesCastTest()
+  ShowBigMessage(L.BIGMSG)
+  DisableWhenStillAndDebuffedTest(8.5)
+end
 ------------------------------------------------------------
 --  Event hook
 ------------------------------------------------------------
@@ -247,8 +342,20 @@ end)
 ------------------------------------------------------------
 --  Slash commands
 ------------------------------------------------------------
-SLASH_DTMTEST1 = "/dtmtest"
-SlashCmdList["DTMTEST"] = function(_) OnShacklesCast() end
+SLASH_DTSCREENTEST1 = "/dtscreentest"
+SlashCmdList["DTSCREENTEST"] = function(_) OnShacklesCast() end
+
+------------------------------------------------------------
+--  Slash commands
+------------------------------------------------------------
+SLASH_COCTEST1 = "/coctest"
+SlashCmdList["COCTEST"] = function(_) OnShacklesCastCoc() end
+
+------------------------------------------------------------
+--  Slash commands
+------------------------------------------------------------
+SLASH_DTMOVETEST1 = "/dtmovetest"
+SlashCmdList["DTMOVETEST"] = function(_) OnShacklesCastTest() end
 
 SLASH_DTMVER1 = "/dtver"
 SlashCmdList["DTMVER"] = function()
@@ -323,4 +430,3 @@ SlashCmdList["DTMQETOGGLE"] = function(msg)
   DEFAULT_CHAT_FRAME:AddMessage("|cff00ff00[DT_Mephistroth]|r Q/E disabling: "
     .. (DT_MephistrothDB.includeQE and "|cffffff00ON|r" or "|cffff0000OFF|r"))
 end
-

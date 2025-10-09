@@ -7,7 +7,7 @@
 ## Notes-zhTW: 當BOSS Mephistroth施放「Shackles of the Legion!」時自動禁用WASD及方向鍵，8秒後恢復。
 ## Author: 果盘杀手, 二狗子 - 天空之城（乌龟拉风服务器）
 ## X-Website: https://github.com/AllinGaming/DT_Mephistroth
-## Version: 1.5
+## Version: 1.6
 ## SavedVariables: DT_MephistrothDB
 ## LoadOnDemand: 0
 ## Category: Raid
