@@ -6,7 +6,7 @@
 --  Version info
 ------------------------------------------------------------
 local ADDON_PREFIX = "DTMEPH"
-local ADDON_VERSION = "1.6.0"
+local ADDON_VERSION = "1.6.1"
 local versionReplies = {}
 local versionActive  = false
 local versionStart   = 0
@@ -168,7 +168,7 @@ local function WatchAuraCoC()
     RestoreBindings()
     return
   end
-  DT_Timer.After(0.2, WatchAura)
+  DT_Timer.After(0.2, WatchAuraCoC)
 end
 ------------------------------------------------------------
 --  Wait until still & debuffed (timer-based)
