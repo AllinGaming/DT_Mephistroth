@@ -1,5 +1,20 @@
 # Mephistroth 按键禁用助手（乌龟服专用）
-/dtmtest to test the addon
+SLASH_DTSCREENTEST1 = "/dtscreentest"
+SlashCmdList["DTSCREENTEST"] = function(_) OnShacklesCast() end
+
+------------------------------------------------------------
+--  Slash commands
+------------------------------------------------------------
+SLASH_COCTEST1 = "/coctest"
+SlashCmdList["COCTEST"] = function(_) OnShacklesCastCoc() end
+
+------------------------------------------------------------
+--  Slash commands
+------------------------------------------------------------
+SLASH_DTMOVETEST1 = "/dtmovetest"
+SlashCmdList["DTMOVETEST"] = fu
+
+
 /dtqe on to disable q and e keys too
 /dtqe off to disable disabling q and e
 
@@ -21,3 +36,4 @@ Limitations
 1 - You will still be able to move by holding down left + right mouse buttons. So, it is still possible to break the shackles this way!
 2 - This addon will not stop you if you are ALREADY MOVING when the check (0.1 seconds left) occurs. It will only PREVENT your movement after the check has completed.
 3 - If you RELEASE your movement keys during the check you will be stuck in an autorun state and break the shackles. NOBODY should be trying to optimise their movement with only 0.1 seconds left; that is a ridiculous level of optimisation
+
